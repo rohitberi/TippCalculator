@@ -46,8 +46,26 @@ public class TippCalculator extends Activity {
 
         SeekBar customTipSeekBar  = (SeekBar) findViewById(R.id.customTipSeekBar);
         customTipSeekBar.setOnSeekBarChangeListener(customSeekBarListner);
-
     }
+
+    private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // sets customPercent to position of the SeekBar's thumb
+            customPercent = progress / 100.0;
+            updateCustom(); // update the custom tip TextViews
+        } // end method onProgressChanged
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
