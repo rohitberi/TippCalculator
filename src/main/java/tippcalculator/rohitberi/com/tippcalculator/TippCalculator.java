@@ -2,6 +2,8 @@ package tippcalculator.rohitberi.com.tippcalculator;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -41,11 +43,11 @@ public class TippCalculator extends Activity {
         updateStandard();
         updateCustom();
 
-        EditText  amountEditText = (EditText) findViewById(R.id.amountDisplayTextView);
+        EditText  amountEditText = (EditText) findViewById(R.id.amountEditText);
         amountEditText.addTextChangedListener(amountEditTextWatcher);
 
         SeekBar customTipSeekBar  = (SeekBar) findViewById(R.id.customTipSeekBar);
-        customTipSeekBar.setOnSeekBarChangeListener(customSeekBarListner);
+        customTipSeekBar.setOnSeekBarChangeListener(customSeekBarListener);
     }
 
     private SeekBar.OnSeekBarChangeListener customSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
@@ -66,6 +68,54 @@ public class TippCalculator extends Activity {
 
         }
     };
+
+    private TextWatcher amountEditTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            try{
+                billAmount = Double.parseDouble(s.toString()) / 100;
+            }
+            catch (NumberFormatException e) {
+                billAmount = 0.00;
+            }
+
+            amountDisplayTextView.setText(currencyFormat.format(billAmount));
+            updateStandard();
+            updateCustom();
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+
+    private void updateStandard(){
+        double fifteenPercentTip = billAmount * 0.15;
+        double fifteenPercentTotal = billAmount + fifteenPercentTip;
+
+        tip15TextView.setText(currencyFormat.format(fifteenPercentTip));
+        total15TextView.setText(currencyFormat.format(fifteenPercentTotal));
+    }
+
+    private void updateCustom(){
+        percentCustomTextView.setText(percentFormat.format(customPercent));
+
+        double customTip = billAmount * customPercent;
+        double customTotal = billAmount + customTip;
+
+        tipCustomTextView.setText(currencyFormat.format(customTip));
+        totalCustomTextView.setText(currencyFormat.format(customTotal));
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
